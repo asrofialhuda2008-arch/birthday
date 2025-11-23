@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Gift</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #4a6fa5 0%, #6d8cc0 50%, #8ba7d3 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.8s ease;
+        }
+
+        .welcome-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .welcome-message {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .start-button {
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, #4a6fa5, #6d8cc0);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .start-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Header Section */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .birthday-person {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .photo-frame {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .photo-frame:hover {
+            transform: scale(1.05);
+        }
+
+        .birthday-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .birthday-message {
+            margin-top: 20px;
+        }
+
+        .birthday-message h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            min-height: 60px;
+        }
+
+        .birthday-message p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+            min-height: 100px;
+        }
+
+        /* Cards Section */
+        .cards-section {
+            margin-bottom: 40px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .cards-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .cards-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            min-height: 180px;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-left {
+            flex-direction: row;
+        }
+
+        .card-right {
+            flex-direction: row-reverse;
+        }
+
+        .card-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            flex-shrink: 0;
+        }
+
+        .card-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-content {
+            flex: 1;
+        }
+
+        .card-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .card-message {
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Animations */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .floating {
+            animation: float 5s ease-in-out infinite;
+        }
+
+        /* Confetti */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            opacity: 0.8;
+            bottom: 0;
+        }
+
+        /* Sparkle Effects */
+        .sparkle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 50;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .birthday-message h1 {
+                font-size: 2rem;
+            }
+            
+            .birthday-message p {
+                font-size: 1rem;
+            }
+            
+            .card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .welcome-message {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Screen -->
+    <div class="welcome-screen" id="welcomeScreen">
+        <p class="welcome-message">Ada kejutan spesial untukmu!</p>
+        <button class="start-button" id="startButton">Siap?</button>
+    </div>
+
+    <!-- Confetti Container -->
+    <div class="confetti-container" id="confettiContainer"></div>
+
+    <!-- Sparkle Container -->
+    <div id="sparkleContainer"></div>
+
+    <!-- Main Content -->
+    <div class="container" id="mainContent" style="display: none;">
+        <!-- Header Section -->
+        <header class="header">
+            <div class="birthday-person">
+                <div class="photo-frame floating">
+                    <!-- Path foto yang sudah diperbarui -->
+                    <img src="img/birthday-person.jpeg" alt="Muhammad Asrofi Al Huda" class="birthday-photo">
+                </div>
+                <div class="birthday-message">
+                    <h1 id="typing-text"></h1>
+                    <p id="typing-text-secondary"></p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Cards Section -->
+        <section class="cards-section" id="cardsSection">
+            <h2 class="section-title">Ucapan dari Keluarga</h2>
+            <div class="cards-container">
+                <!-- Kartu 1 -->
+                <div class="card card-left" id="card1">
+                    <div class="card-photo">
+                        <!-- Path foto yang sudah diperbarui -->
+                        <img src="img/family1.png" alt="Anggota Keluarga 1">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-name">Ayah</h3>
+                        <p class="card-message">Selamat ULTAH yang ke 17. Semoga hari ini dan hari-hari berikutnya dalam hidupmu membawa keberkahan, kesuksesan, kesehatan dan kebahagiaan. Aamien yarobaalalamin wa‘aththif qulubal ‘alamina bi asrihim ‘alayya wa albisni qobulan bi syalmahat. Aamien</p>
+                    </div>
+                </div>
+
+                <!-- Kartu 2 -->
+                <div class="card card-right" id="card2">
+                    <div class="card-photo">
+                        <!-- Path foto yang sudah diperbarui -->
+                        <img src="img/family2.png" alt="Anggota Keluarga 2">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-name">Ibu</h3>
+                        <p class="card-message">Semoga tercapai cita-cita mu 🤲 Tetap semangat🔥🔥</p>
+                    </div>
+                </div>
+
+                <!-- Kartu 3 -->
+                <div class="card card-left" id="card3">
+                    <div class="card-photo">
+                        <!-- Path foto yang sudah diperbarui -->
+                        <img src="img/family3.png" alt="Anggota Keluarga 3">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-name">Mbak Ila</h3>
+                        <p class="card-message">Pokoknya, Selamat Ulang Tahun!! 🔥🔥🔥 (Terlalu malas untuk membuat kalimat apapun 😂🙏)</p>
+                    </div>
+                </div>
+
+                <!-- Kartu 4 -->
+                <div class="card card-right" id="card4">
+                    <div class="card-photo">
+                        <!-- Path foto yang sudah diperbarui -->
+                        <img src="img/family4.png" alt="Anggota Keluarga 4">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-name">Mas Kiya'</h3>
+                        <p class="card-message">Happy Sweet Seventeen! Semoga tahun ini membawa banyak kebahagiaan, petualangan baru, dan kenangan indah untukmu!</p>
+                    </div>
+                </div>
+
+                <!-- Kartu 5 -->
+                <div class="card card-left" id="card5">
+                    <div class="card-photo">
+                        <!-- Path foto yang sudah diperbarui -->
+                        <img src="img/family5.png" alt="Anggota Keluarga 5">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-name">Wawa</h3>
+                        <p class="card-message">Selamat ulang tahun! Semoga setiap langkahmu selalu diberkati dan dilimpahi kebahagiaan. Teruslah menjadi berkat bagi orang lain!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Made with ❤ by Our Family!</p>
+        </footer>
+    </div>
+
+    <!-- Audio untuk lagu ulang tahun -->
+    <audio id="birthdayAudio" loop>
+        <source src="sound/541175__sergequadrado__happy-birthday-to-you-lullaby.mp3" type="audio/mpeg">
+        Browser Anda tidak mendukung elemen audio.
+    </audio>
+
+    <script>
+        // Elemen DOM
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const startButton = document.getElementById('startButton');
+        const mainContent = document.getElementById('mainContent');
+        const confettiContainer = document.getElementById('confettiContainer');
+        const sparkleContainer = document.getElementById('sparkleContainer');
+        const birthdayAudio = document.getElementById('birthdayAudio');
+        const cardsSection = document.getElementById('cardsSection');
+        const typingText = document.getElementById('typing-text');
+        const typingTextSecondary = document.getElementById('typing-text-secondary');
+
+        // Variabel untuk melacak apakah confetti sudah dijalankan
+        let confettiPlayed = false;
+
+        // Fungsi untuk membuat confetti yang meledak dari bawah dengan arah diagonal
+        function createConfetti() {
+            if (confettiPlayed) return;
+            confettiPlayed = true;
+            
+            const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffffff'];
+            const confettiCount = 150;
+            
+            for (let i = 0; i < confettiCount; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                // Tentukan sisi (kiri atau kanan)
+                const isLeftSide = Math.random() > 0.5;
+                const startPosition = isLeftSide ? 
+                    (Math.random() * 40) : // 0-40% dari kiri
+                    (60 + Math.random() * 40); // 60-100% dari kiri
+                
+                confetti.style.left = startPosition + 'vw';
+                confetti.style.bottom = '-5vh';
+                
+                // Animasi confetti dengan arah diagonal
+                const animationDuration = (Math.random() * 1.5 + 1) + 's'; // Durasi lebih pendek
+                const horizontalDistance = isLeftSide ? 
+                    (20 + Math.random() * 30) : // Ke kanan
+                    (-20 - Math.random() * 30); // Ke kiri
+                
+                confetti.style.animation = `confettiDiagonal ${animationDuration} ease-in forwards`;
+                
+                // Set custom properties untuk animasi
+                confetti.style.setProperty('--horizontal-distance', `${horizontalDistance}vw`);
+                confetti.style.setProperty('--vertical-distance', `${-40 - Math.random() * 30}vh`);
+                
+                // Random shape
+                if (Math.random() > 0.5) {
+                    confetti.style.borderRadius = '50%';
+                }
+                
+                // Random size
+                const size = Math.random() * 8 + 4;
+                confetti.style.width = size + 'px';
+                confetti.style.height = size + 'px';
+                
+                confettiContainer.appendChild(confetti);
+                
+                // Hapus confetti setelah animasi selesai
+                setTimeout(() => {
+                    if (confetti.parentNode) {
+                        confetti.remove();
+                    }
+                }, 3000);
+            }
+        }
+
+        // Fungsi untuk membuat efek kelap-kelip seperti kembang api
+        function createSparkles() {
+            const sparkleCount = 15;
+            
+            for (let i = 0; i < sparkleCount; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                
+                // Random position
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                
+                // Random size
+                const size = Math.random() * 100 + 50;
+                
+                sparkle.style.left = left + 'vw';
+                sparkle.style.top = top + 'vh';
+                sparkle.style.width = size + 'px';
+                sparkle.style.height = size + 'px';
+                sparkle.style.opacity = '0';
+                
+                // Random animation delay
+                const delay = Math.random() * 3;
+                sparkle.style.animation = `sparkleTwinkle 2s ease-in-out ${delay}s infinite`;
+                
+                sparkleContainer.appendChild(sparkle);
+            }
+        }
+
+        // Tambahkan keyframe untuk animasi confetti diagonal
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes confettiDiagonal {
+                0% {
+                    transform: translate(0, 0) rotate(0deg);
+                    opacity: 1;
+                }
+                70% {
+                    opacity: 1;
+                }
+                100% {
+                    transform: translate(var(--horizontal-distance), var(--vertical-distance)) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+            
+            @keyframes sparkleTwinkle {
+                0%, 100% {
+                    opacity: 0;
+                    transform: scale(0.5);
+                }
+                50% {
+                    opacity: 0.7;
+                    transform: scale(1);
+                }
+            }
+            
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            
+            .card {
+                animation: fadeInUp 0.6s ease forwards;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Fungsi untuk memulai website
+        function startWebsite() {
+            // Sembunyikan layar selamat datang
+            welcomeScreen.classList.add('hidden');
+            
+            // Tampilkan konten utama setelah delay
+            setTimeout(() => {
+                mainContent.style.display = 'block';
+                // Mulai efek ketik untuk pesan ulang tahun
+                typeWriterEffect();
+            }, 800);
+            
+            // Buat confetti (hanya sekali)
+            createConfetti();
+            
+            // Buat efek kelap-kelip
+            createSparkles();
+            
+            // Mainkan audio ulang tahun
+            birthdayAudio.play().catch(e => {
+                console.log("Autoplay diblokir oleh browser. Klik tombol untuk memutar audio.");
+            });
+        }
+
+        // Efek ketik untuk pesan ulang tahun
+        function typeWriterEffect() {
+            const originalText = "Selamat Ulang Tahun Yang Ke-17 Muhammad Asrofi Al Huda!";
+            const secondaryText = "Semoga di usia yang baru ini, kamu diberikan kesehatan, kebahagiaan, dan kesuksesan yang berlimpah. Teruslah bersinar dan menjadi inspirasi bagi kita semua!";
+            
+            typingText.textContent = '';
+            typingTextSecondary.textContent = '';
+            
+            let i = 0;
+            function typeWriterPrimary() {
+                if (i < originalText.length) {
+                    typingText.textContent += originalText.charAt(i);
+                    i++;
+                    setTimeout(typeWriterPrimary, 100);
+                } else {
+                    // Setelah selesai mengetik pesan utama, mulai pesan kedua
+                    setTimeout(() => {
+                        typeWriterSecondary();
+                    }, 500);
+                }
+            }
+            
+            let j = 0;
+            function typeWriterSecondary() {
+                if (j < secondaryText.length) {
+                    typingTextSecondary.textContent += secondaryText.charAt(j);
+                    j++;
+                    setTimeout(typeWriterSecondary, 50); // Lebih cepat untuk pesan panjang
+                } else {
+                    // Setelah selesai mengetik pesan kedua, tampilkan kartu ucapan
+                    setTimeout(showCards, 500);
+                }
+            }
+            
+            // Mulai efek ketik
+            setTimeout(typeWriterPrimary, 500);
+        }
+
+        // Fungsi untuk menampilkan kartu ucapan dengan animasi
+        function showCards() {
+            // Tampilkan section kartu
+            cardsSection.classList.add('visible');
+            
+            // Tampilkan kartu satu per satu dengan delay
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('visible');
+                }, index * 300);
+            });
+        }
+
+        // Event listener untuk tombol mulai
+        startButton.addEventListener('click', startWebsite);
+
+        // Tambahkan efek hover pada kartu
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    if (this.classList.contains('visible')) {
+                        this.style.transform = 'translateY(-5px)';
+                    }
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    if (this.classList.contains('visible')) {
+                        this.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
